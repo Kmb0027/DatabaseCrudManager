@@ -13,7 +13,7 @@ namespace ConnectingToDB
 #if DEBUG
             string jsonText = File.ReadAllText("appsettings.development.json");
 #else
-            string jsonText = File.ReadAllText("appsetting.release.json");
+            string jsonText = File.ReadAllText("appsettings.release.json");
 #endif
             string connStr = JObject.Parse(jsonText)["ConnectionStrings"]["DefaultConnection"].ToString();
             DataBaseManager dbm = new DataBaseManager();
