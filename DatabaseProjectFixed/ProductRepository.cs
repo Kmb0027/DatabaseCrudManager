@@ -125,6 +125,23 @@ namespace ConnectingToDB
             }
 
         }
+        public void UpdateProduct(Product product, int productId)
+        {
+            var conn = new MySqlConnection(connStr);
+
+            using (conn)
+            {
+                conn.Open();
+                var cmd = conn.CreateCommand();
+                cmd.CommandText = "UPDATE products SET Name = @n, Price = @p, CategoryId = @cID WHERE ProductId = @pID;";
+                cmd.Parameters.AddWithValue("n", product.Name);
+                cmd.Parameters.AddWithValue("p", product.Price);
+                cmd.Parameters.AddWithValue("cID", product.CategoryId);
+                cmd.Parameters.AddWithValue("pID", productId);
+                cmd.ExecuteNonQuery();
+            }
+
+        }
         public void DeleteProduct(int id)
         {
             var conn = new MySqlConnection(connStr);

@@ -11,7 +11,7 @@ namespace ConnectingToDB
         static void Main(string[] args)
         {
 #if DEBUG
-            string jsonText = File.ReadAllText("appsetting.development.json");
+            string jsonText = File.ReadAllText("appsettings.development.json");
 #else
             string jsonText = File.ReadAllText("appsetting.release.json");
 #endif
@@ -23,80 +23,83 @@ namespace ConnectingToDB
             {
                 Console.Clear();
                 Console.WriteLine("Would you like to \n1. View all products in the product table? \n2. Create an entry in the product table \n3. Update an entry in the product table \n4. Delete an entry in the product table");
-                int userChoice = int.Parse(Console.ReadLine());
-                Console.Clear();
-
-                switch (userChoice)
+                if (int.TryParse(Console.ReadLine(), out int userChoice))
                 {
-                    case 1:
-                        Console.Clear();
-                        List<Product> products = prodRep.GetAllProducts();
-                        foreach (Product product in products)
-                        {
-                            Console.WriteLine($"Product ID:{product.Id}, Name:{product.Name}, Price: ${product.Price}, Category ID: {product.CategoryId}.");
-                        }
-                        mainMenuTrigger = dbm.MainMenuRequest();
-                        break;
+                    Console.Clear();
 
-
-                    case 2:
-                        Console.Clear();
-                        Product createProduct = dbm.AskUserToDefineProduct("create");
-                        Console.Clear();
-                        if (dbm.GetUserConfirmation("create entry")) { prodRep.CreateProduct(createProduct); }
-                        else { break; }
-                        dbm.SucessfulFeedback("created");
-                        mainMenuTrigger = dbm.MainMenuRequest();
-                        break;
-
-                    case 3:
-                        Console.Clear();
-                        if (dbm.ToSeeProductList())
-                        {
-                            List<Product> updateProducts = prodRep.GetAllProducts();
-                            foreach (Product product in updateProducts)
+                    switch (userChoice)
+                    {
+                        case 1:
+                            Console.Clear();
+                            List<Product> products = prodRep.GetAllProducts();
+                            foreach (Product product in products)
                             {
                                 Console.WriteLine($"Product ID:{product.Id}, Name:{product.Name}, Price: ${product.Price}, Category ID: {product.CategoryId}.");
                             }
+                            mainMenuTrigger = dbm.MainMenuRequest();
+                            break;
 
-                        }
-                        Product updateProduct = dbm.AskUserToDefineProduct("update");
-                        Console.Clear();
-                        if (dbm.GetUserConfirmation("update entry"))
-                        {
-                            prodRep.UpdateProduct(updateProduct);
+
+                        case 2:
                             Console.Clear();
-                            dbm.SucessfulFeedback("updated");
-                        }
-                        mainMenuTrigger = dbm.MainMenuRequest();
-                        break;
+                            Product createProduct = dbm.AskUserToDefineProduct("create");
+                            Console.Clear();
+                            if (dbm.GetUserConfirmation("create entry")) { prodRep.CreateProduct(createProduct); }
+                            else { break; }
+                            dbm.SucessfulFeedback("created");
+                            mainMenuTrigger = dbm.MainMenuRequest();
+                            break;
 
-                    case 4:
-                        Console.Clear();
-                        if (dbm.ToSeeProductList())
-                        {
-                            List<Product> deleteProducts = prodRep.GetAllProducts();
-                            foreach (Product product in deleteProducts)
+                        case 3:
+                            Console.Clear();
+                            if (dbm.ToSeeProductList())
                             {
-                                Console.WriteLine($"Product ID:{product.Id}, Name:{product.Name}, Price: ${product.Price}, Category ID: {product.CategoryId}.");
+                                List<Product> updateProducts = prodRep.GetAllProducts();
+                                foreach (Product product in updateProducts)
+                                {
+                                    Console.WriteLine($"Product ID:{product.Id}, Name:{product.Name}, Price: ${product.Price}, Category ID: {product.CategoryId}.");
+                                }
+
                             }
-
-                        }
-                        int deleteId = dbm.ProductIdSelection("delete");
-                        if (dbm.GetUserConfirmation("delete"))
-                        {
-                            prodRep.DeleteProduct(deleteId);
+                            int updateProductId = dbm.ProductIdToUpdate();
+                            Product updateProduct = dbm.AskUserToDefineProductUpdate();
                             Console.Clear();
-                            dbm.SucessfulFeedback("deleted");
-                        }
-                        mainMenuTrigger = dbm.MainMenuRequest();
-                        break;
+                            if (dbm.GetUserConfirmation("update entry"))
+                            {
+                                prodRep.UpdateProduct(updateProduct, updateProductId);
+                                Console.Clear();
+                                dbm.SucessfulFeedback("updated");
+                            }
+                            mainMenuTrigger = dbm.MainMenuRequest();
+                            break;
+
+                        case 4:
+                            Console.Clear();
+                            if (dbm.ToSeeProductList())
+                            {
+                                List<Product> deleteProducts = prodRep.GetAllProducts();
+                                foreach (Product product in deleteProducts)
+                                {
+                                    Console.WriteLine($"Product ID:{product.Id}, Name:{product.Name}, Price: ${product.Price}, Category ID: {product.CategoryId}.");
+                                }
+
+                            }
+                            int deleteId = dbm.ProductIdSelection("delete");
+                            if (dbm.GetUserConfirmation("delete"))
+                            {
+                                prodRep.DeleteProduct(deleteId);
+                                Console.Clear();
+                                dbm.SucessfulFeedback("deleted");
+                            }
+                            mainMenuTrigger = dbm.MainMenuRequest();
+                            break;
 
 
 
 
-                    default:
-                        break;
+                        default:
+                            break;
+                    }
                 }
             }
 
