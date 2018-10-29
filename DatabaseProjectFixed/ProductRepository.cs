@@ -92,38 +92,11 @@ namespace ConnectingToDB
         }
         public void CreateProduct(Product product)
         {
-            MySqlConnection conn = new MySqlConnection(connStr);
-
-            using (conn)
-            {
-                conn.Open();
-
-                MySqlCommand cmd = conn.CreateCommand();
-                cmd.CommandText = "INSERT INTO products (Name, Price, CategoryID) VALUES (@name, @price, @catID);";
-                cmd.Parameters.AddWithValue("name", product.Name);
-                cmd.Parameters.AddWithValue("price", product.Price);
-                cmd.Parameters.AddWithValue("catID", product.CategoryId);
-                cmd.ExecuteNonQuery();
-
-            }
-
+            CreateProduct(product.Name, (double)product.Price, product.CategoryId);
         }
         public void UpdateProduct(Product product)
         {
-            var conn = new MySqlConnection(connStr);
-
-            using (conn)
-            {
-                conn.Open();
-                var cmd = conn.CreateCommand();
-                cmd.CommandText = "UPDATE products SET Name = @n, Price = @p, CategoryId = @cID WHERE ProductId = @pID;";
-                cmd.Parameters.AddWithValue("n", product.Name);
-                cmd.Parameters.AddWithValue("p", product.Price);
-                cmd.Parameters.AddWithValue("cID", product.CategoryId);
-                cmd.Parameters.AddWithValue("pID", product.Id);
-                cmd.ExecuteNonQuery();
-            }
-
+            UpdateProduct(product, product.Id);
         }
         public void UpdateProduct(Product product, int productId)
         {
@@ -160,19 +133,7 @@ namespace ConnectingToDB
         }
         public void DeleteProduct(Product product)
         {
-            var conn = new MySqlConnection(connStr);
-
-            using (conn)
-            {
-                conn.Open();
-                var cmd = conn.CreateCommand();
-                cmd.CommandText = "DELETE FROM products WHERE ProductId = @pID;";
-                cmd.Parameters.AddWithValue("pID", product.Id);
-                cmd.ExecuteNonQuery();
-
-            }
-
-
+            DeleteProduct(product.Id);
         }
 
 
